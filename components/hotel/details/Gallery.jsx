@@ -3,7 +3,6 @@ import Image from "next/image";
 const Gallery = ({ gallery }) => {
   const newImageGall = [...gallery];
   newImageGall.shift();
-  console.log(newImageGall);
 
   return (
     <section className="container">
@@ -21,7 +20,7 @@ const Gallery = ({ gallery }) => {
           {newImageGall.map((img, i) => (
             <Image
               src={img || `/${i + 1}.png`}
-              key={img}
+              key={Math.random() * 100}
               alt="sub pic"
               width={400}
               height={400}

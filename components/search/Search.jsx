@@ -77,7 +77,7 @@ const Search = ({ fromList, destination, checkin, checkout }) => {
                 type="date"
                 name="checkin"
                 id="checkin"
-                value={searchTerm.checkin}
+                defaultValue={searchTerm.checkin}
                 onChange={handleInputs}
               />
             </h4>
@@ -90,7 +90,7 @@ const Search = ({ fromList, destination, checkin, checkout }) => {
                 type="date"
                 name="checkout"
                 id="checkout"
-                value={searchTerm.checkout}
+                defaultValue={searchTerm.checkout}
                 onChange={handleInputs}
               />
             </h4>
