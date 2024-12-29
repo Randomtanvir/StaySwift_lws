@@ -8,9 +8,17 @@ export const login = async (formData) => {
       password: formData.get("password"),
       redirect: false,
     });
-    console.log("Action response", response);
+
     return response;
   } catch (error) {
-    return { error: true, message: "Somthing went wrong" };
+    if (error["cause"]?.["err"]?.toString().includes(" User not found")) {
+      return { error: true, message: "User not found" };
+    } else if (
+      error["cause"]?.["err"]?.toString().includes("Email or password mismatch")
+    ) {
+      return { error: true, message: "Email or password mismatch" };
+    } else {
+      return { error: true, message: "Somthing went wrong" };
+    }
   }
 };

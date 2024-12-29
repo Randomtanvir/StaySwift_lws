@@ -13,13 +13,10 @@ const LoginForm = () => {
     try {
       const formData = new FormData(event.currentTarget);
       const response = await login(formData);
-      console.log(response);
-
       if (response.error) {
         setError(response.message);
       } else {
-        // router.push("/bookings");
-        console.log(response);
+        router.push("/bookings");
       }
     } catch (err) {
       setError(err.message);
