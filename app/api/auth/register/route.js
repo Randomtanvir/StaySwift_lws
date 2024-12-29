@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 
 export const POST = async (request) => {
   const { fname, lname, email, password } = await request.json();
-  await dbConnect();
   const hashedPassword = await bcrypt.hash(password, 5);
   const newUser = {
     name: `${fname} ${lname}`,
@@ -13,6 +12,12 @@ export const POST = async (request) => {
     password: hashedPassword,
   };
   try {
+    await dbConnect();
+    const found = await userModel.findOne({ email });
+    console.log(found);
+    if (found) {
+      return new NextResponse("User already exists", { status: 409 });
+    }
     await userModel.create(newUser);
     return new NextResponse("User create success", { status: 201 });
   } catch (error) {

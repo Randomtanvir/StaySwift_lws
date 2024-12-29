@@ -28,7 +28,9 @@ const RegistrationForm = () => {
           password,
         }),
       });
+
       response.status === 201 && router.push("/login");
+      response.status === 409 && setError("User already exists");
     } catch (error) {
       setError(error.message);
     }
