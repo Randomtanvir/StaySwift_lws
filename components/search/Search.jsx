@@ -1,4 +1,53 @@
-const Search = ({fromList}) => {
+"use client";
+
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+
+const Search = ({ fromList, destination, checkin, checkout }) => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+
+  const [searchTerm, setSearchTerm] = useState({
+    destination: destination || "Puglia",
+    checkin: checkin,
+    checkout: checkout,
+  });
+
+  const [allowSearch, setAllowSearch] = useState(true);
+
+  const handleInputs = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+
+    const state = { ...searchTerm, [name]: value };
+
+    if (
+      new Date(state.checkin).getTime() > new Date(state.checkout).getTime()
+    ) {
+      setAllowSearch(false);
+    } else {
+      setAllowSearch(true);
+    }
+    setSearchTerm(state);
+  };
+
+  function doSearch(event) {
+    const params = new URLSearchParams(searchParams);
+
+    params.set("destination", searchTerm?.destination || "all");
+    if (searchTerm?.checkin && searchTerm?.checkout) {
+      params.set("checkin", searchTerm?.checkin);
+      params.set("checkout", searchTerm?.checkout);
+    }
+
+    if (pathname.includes("hotels")) {
+      replace(`${pathname}?${params.toString()}`);
+    } else {
+      replace(`${pathname}hotels?${params.toString()}`);
+    }
+  }
+
   return (
     <>
       <div className="lg:max-h-[250px] mt-6">
@@ -6,12 +55,17 @@ const Search = ({fromList}) => {
           <div>
             <span>Destination</span>
             <h4 className="mt-2">
-              <select name="destination" id="destination">
-                <option value="Bali">Bali</option>
-                <option value="Bali">Cox's Bazar</option>
-                <option value="Bali">Sylhet</option>
-                <option value="Bali">Saint Martin</option>
-                <option value="Bali">Bali</option>
+              <select
+                name="destination"
+                id="destination"
+                defaultValue={searchTerm.destination}
+                onChange={handleInputs}
+              >
+                <option value="Puglia">Puglia</option>
+                <option value="Catania">Catania</option>
+                <option value="Palermo">Palermo</option>
+                <option value="Frejus">Frejus</option>
+                <option value="Paris">Paris</option>
               </select>
             </h4>
           </div>
@@ -19,20 +73,42 @@ const Search = ({fromList}) => {
           <div>
             <span>Check in</span>
             <h4 className="mt-2">
-              <input type="date" name="checkin" id="checkin" />
+              <input
+                type="date"
+                name="checkin"
+                id="checkin"
+                value={searchTerm.checkin}
+                onChange={handleInputs}
+              />
             </h4>
           </div>
 
           <div>
             <span>Checkout</span>
             <h4 className="mt-2">
-              <input type="date" name="checkout" id="checkout" />
+              <input
+                type="date"
+                name="checkout"
+                id="checkout"
+                value={searchTerm.checkout}
+                onChange={handleInputs}
+              />
             </h4>
           </div>
         </div>
       </div>
 
-      <button className="search-btn">🔍️ {fromList ? "Modify Search": "Search"}</button>
+      <button
+        disabled={!allowSearch}
+        className={`${
+          allowSearch
+            ? "search-btn"
+            : "bg-gray-600 px-8 py-3 rounded-md block mx-auto text-white font-bold -translate-y-1/2 cursor-not-allowed hover:shadow-primary/50 active:scale-95 transition-all"
+        }`}
+        onClick={doSearch}
+      >
+        🔍️ {fromList ? "Modify Search" : "Search"}
+      </button>
     </>
   );
 };
