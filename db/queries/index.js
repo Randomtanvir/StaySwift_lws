@@ -77,12 +77,18 @@ export const getRatingsForHotel = async (hotelId) => {
   const rating = await ratingModel.find({ hotelId }).lean();
   return replaceMongoIdInArray(rating);
 };
+
 export const getReviewsForHotel = async (hotelId) => {
   const rating = await reviewModel.find({ hotelId: hotelId }).lean();
   return replaceMongoIdInArray(rating);
 };
 
-export async function getUserByEmail(email) {
+export const getUserByEmail = async (email) => {
   const users = await userModel.find({ email: email }).lean();
   return replaceMongoIdInObject(users[0]);
-}
+};
+
+export const getBookingByUser = async (userId) => {
+  const bookings = await bookingModel.find({ userId }).lean();
+  return replaceMongoIdInArray(bookings);
+};
